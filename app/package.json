@@ -1,0 +1,12 @@
+{
+	"name": "app",
+	"description": "",
+	"version": "1.0.0",
+	"main": "./dist-es2015/index.js",
+	"jsnext:main": "./dist-es2015/index.js",
+	"typings": "./dist-typings/index.d.ts",
+	"dependencies": {
+		"@core/module-resolver": "latest",
+		"@core/resources": "latest"
+	}
+}
