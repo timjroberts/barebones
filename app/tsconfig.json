@@ -11,6 +11,7 @@
 		"strictNullChecks": true,
 		"baseUrl": ".",
 		"paths": {
+			"@core/node-system": ["../@core/node-system"],
 			"@core/resources": ["../@core/resources"]
 		}
 	},

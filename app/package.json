@@ -6,6 +6,7 @@
 	"jsnext:main": "./dist-es2015/index.js",
 	"typings": "./dist-typings/index.d.ts",
 	"dependencies": {
+		"@core/node-system": "latest",
 		"@core/module-resolver": "latest",
 		"@core/resources": "latest"
 	}

@@ -1,13 +1,17 @@
 {
-	"name": "@core/globalization",
+	"name": "@core/node-system",
 	"description": "",
 	"version": "1.0.0",
 	"main": "./dist-es5/index.js",
 	"jsnext:main": "./dist-es2015/index.js",
 	"typings": "./dist-typings/index.d.ts",
+	"dependencies": {
+		"os-locale": "~2.0"
+	},
 	"peerDependencies": {
 		"@core/system": "latest"
 	},
 	"devDependencies": {
+		"@types/os-locale": "latest"
 	}
 }
