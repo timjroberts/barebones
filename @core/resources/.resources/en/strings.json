@@ -1,0 +1,5 @@
+{
+	"errors": {
+		"missingStringResource": "Could not find string resource '{stringName}' for culture '{cultureName}'."
+	}
+}

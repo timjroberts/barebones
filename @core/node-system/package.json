@@ -12,6 +12,7 @@
 		"@core/system": "latest"
 	},
 	"devDependencies": {
-		"@types/os-locale": "latest"
+		"@types/os-locale": "latest",
+		"@types/node": "latest"
 	}
 }

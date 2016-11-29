@@ -4,6 +4,7 @@ import * as fs from "fs";
 const Module = require("module");
 
 import { BuiltInModules } from "./BuiltinModules";
+import { ResourceModuleGenerator } from "./ResourceModuleGenerator";
 
 export type ResolveFunc = (name: string, module: NodeModule) => string;
 
@@ -44,6 +45,10 @@ export class Resolver {
 	 * _basePath_.
 	 */
 	public static resolve(requiredPath: string, basePath: string): string {
+		let resourcePathMatches = /(.*)!resources/g.exec(requiredPath);
+
+		if (resourcePathMatches) return Resolver.resolveResources(resourcePathMatches[1], basePath);
+
 		if (path.isAbsolute(requiredPath)) return requiredPath;
 
 		if (requiredPath[0] === '.') {
@@ -106,9 +111,9 @@ export class Resolver {
 	 * @param basePath The path from which the search should begin.
 	 *
 	 * @returns A string representing the path to the nearest 'package.json' file that is relative
-	 * to _basePath_.
+	 * to _basePath_; otherwise *undefined* if a 'package.json' file could not be resolved.
 	 */
-	private static resolveBasePackageFilePath(basePath: string): string |undefined {
+	private static resolveBasePackageFilePath(basePath: string): string | undefined {
         let currentPath: string | undefined = undefined;
 
         while (basePath != currentPath) {
@@ -155,5 +160,22 @@ export class Resolver {
 		}
 
 		return path.join(packageFolderPath, packageMainFilePath);
+	}
+
+	private static resolveResources(resourcePath: string, basePath: string): string {
+		if (resourcePath !== "" && resourcePath !== "local") throw new Error(`Cannot find module '${resourcePath}!resources'`);
+
+		let packageJsonFilePath = Resolver.resolveBasePackageFilePath(path.parse(basePath).dir);
+
+		if (!packageJsonFilePath) throw new Error(`Cannot find module '${resourcePath}!resources'`);
+
+		let resourceFolderPath = path.join(path.parse(packageJsonFilePath).dir, ".resources");
+		let resourceModuleFilePath = path.join(resourceFolderPath, "resources.js");
+
+		if (!fs.existsSync(resourceFolderPath)) throw new Error(`Cannot find module '${resourcePath}!resources'`);
+
+		new ResourceModuleGenerator(resourceFolderPath).generate(resourceModuleFilePath);
+
+		return resourceModuleFilePath;
 	}
 }

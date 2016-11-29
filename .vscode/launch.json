@@ -12,7 +12,8 @@
 			"cwd": "${workspaceRoot}\\app",
 			"outFiles": [
 				"${workspaceRoot}\\app\\dist-es2015\\**\\*.js",
-				"${workspaceRoot}\\@core\\module-resolver\\dist-es2015\\**\\*.js"
+				"${workspaceRoot}\\@core\\module-resolver\\dist-es2015\\**\\*.js",
+				"${workspaceRoot}\\@core\\resources\\dist-es2015\\**\\*.js"
 			],
 			"sourceMaps": true
 		},

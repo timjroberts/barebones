@@ -12,7 +12,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"@core/node-system": ["../@core/node-system"],
-			"@core/resources": ["../@core/resources"]
+			"@core/resources": ["../@core/resources"],
+			"@core/globalization": ["../@core/globalization"]
 		}
 	},
 	"exclude": [

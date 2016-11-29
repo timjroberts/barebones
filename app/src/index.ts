@@ -6,4 +6,6 @@ import "@core/node-system";
 
 import { ResourceManager } from "@core/resources";
 
-ResourceManager.doIt();
+import * as appResources from "!resources";
+
+console.log(new ResourceManager(appResources).getFormattedString("messages.helloWorld"));

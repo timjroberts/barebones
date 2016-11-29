@@ -1,3 +1,5 @@
+import * as path from "path";
+import * as fs from "fs";
 import * as oslocale from "os-locale";
 
 import { ISystemFunctions } from "@core/system";
@@ -15,5 +17,30 @@ export class NodeSystemFunctions {
 		let sysLocale = oslocale.sync();
 
 		return sysLocale.replace("_", "-")
+	}
+
+	/**
+	 * Locates the nearest 'package.json' file from a given path, traversing the directory structure as
+	 * needed.
+	 *
+	 * @param basePath The path from which the search should begin.
+	 *
+	 * @returns A string representing the path to the nearest 'package.json' file that is relative
+	 * to _basePath_; otherwise *undefined* if a 'package.json' file could not be resolved.
+	 */
+	public resolveBasePackageFilePath(basePath: string): string | undefined {
+        let currentPath: string | undefined = undefined;
+
+        while (basePath != currentPath) {
+            let packageJsonFilePath = path.join(basePath, "package.json");
+
+            if (fs.existsSync(packageJsonFilePath)) return packageJsonFilePath;
+
+            currentPath = basePath;
+
+            basePath = path.join(currentPath, "..");
+        }
+
+        return undefined;
 	}
 }
