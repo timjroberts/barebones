@@ -1,0 +1,24 @@
+<html>
+	<head>
+		<title>SPA Application</title>
+		<!--<script type="text/javascript" src="./node_modules/react/dist/react.min.js"></script>
+		<script type="text/javascript" src="./node_modules/react-dom/dist/react-dom.min.js"></script>-->
+	</head>
+	<body>
+		<div id="main">
+		<div>
+		<script type="text/javascript">
+			var CHROME_MIN_MAJORVERSION = 50;
+
+			var browserMatches = /Chrome\/(\d*)/.exec(navigator.userAgent);
+			var useES2015 = browserMatches ? parseInt(browserMatches[1]) >= CHROME_MIN_MAJORVERSION : false;
+
+			var script = document.createElement("script");
+
+			script.type = "text/javascript";
+			script.src = "./spa-app-" + (useES2015 ? "es2015" : "es5") + ".js";
+
+			document.getElementsByTagName("body")[0].appendChild(script);
+		</script>
+	</body>
+</html>
