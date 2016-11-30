@@ -20,6 +20,12 @@ export class ResourceManager {
 	public getFormattedString(stringResourceId: string, values?: { [index: string]: string }): string {
 		let resourceStrings = this.resourcePack.getStrings(this.cultureInfo);
 
+		if (!resourceStrings) {
+			resourceStrings = this.resourcePack.getStrings(new CultureInfo(this.cultureInfo.name.split('-')[0]));
+
+			if (!resourceStrings) throw new Error(`Could not find string resource '${stringResourceId}' for culture '${this.cultureInfo.name}'`);
+		}
+
 		let stringToFormat = this.traverseStrings(resourceStrings, stringResourceId);
 
         let msgFormatter = new IntlMessageFormat(stringToFormat, this.cultureInfo.name);

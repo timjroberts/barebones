@@ -15,6 +15,14 @@ export class Resolver {
 	private static DEFAULT_EXTENSION: string = ".js";
 
 	/**
+	 * A collection of packges that must be resolved via their 'main' package.json entry
+	 */
+	private static REMAPPED_PACKAGES: string[] = [
+		"intl-messageformat",
+		"intl-messageformat-parser"
+	];
+
+	/**
 	 * Registers the system defined resolve function.
 	 */
 	public static register(): void;
@@ -145,7 +153,7 @@ export class Resolver {
 
 		let packageMainFilePath = "";
 
-		if ((versionMatches ? parseInt(versionMatches[1]) : 0) >= 6 && packageDesc["jsnext:main"]) {
+		if ((versionMatches ? parseInt(versionMatches[1]) : 0) >= 6 && packageDesc["jsnext:main"] && Resolver.REMAPPED_PACKAGES.indexOf(packageDesc["name"]) < 0) {
 			packageMainFilePath = packageDesc["jsnext:main"];
 		}
 		else if (packageDesc["main"]) {
