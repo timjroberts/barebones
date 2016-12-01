@@ -4,7 +4,7 @@ const Resolver = require("../@core/module-resolver").Resolver;
 const CoreResolver = {
 	apply: function(resolver) {
 		resolver.plugin("module", function (request, callback) {
-			let resolvedPath = Resolver.resolve(request.request, request.path);
+			let resolvedPath = Resolver.resolve(request.request, request.path, ["es2015"]);
 
 			this.doResolve(["file"], {
 				path: request.path,

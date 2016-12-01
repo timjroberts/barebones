@@ -6,7 +6,24 @@ const Module = require("module");
 import { BuiltInModules } from "./BuiltinModules";
 import { ResourceModuleGenerator } from "./ResourceModuleGenerator";
 
-export type ResolveFunc = (name: string, module: NodeModule) => string;
+/**
+ * Defines a Javascript target.
+ */
+enum TargetFlags {
+	es2015 = 1 << 0,
+	es5 = 1 << 2,
+	any = es2015 & es5
+}
+
+/**
+ * A function that resolve a name and a base module to an absolute path.
+ *
+ * @param name A module or package name to be resolved.
+ * @param module The module that requires the resolution.
+ *
+ * @returns A string representing the absolute path of _name_ relative to _module_.
+ */
+type ResolveFunc = (name: string, module: NodeModule) => string;
 
 /**
  * Provides utilities for resolving modules.
@@ -23,22 +40,25 @@ export class Resolver {
 	];
 
 	/**
+	 * Provides mapping between a target string and a {@link TargetFlags} value.
+	 */
+	private static TARGET_MAP = {
+		"es2015": TargetFlags.es2015,
+		"es5": TargetFlags.es5,
+		"any": TargetFlags.any
+	};
+
+	/**
 	 * Registers the system defined resolve function.
 	 */
-	public static register(): void;
-	/**
-	 * Registers a supplied resolve function.
-	 *
-	 * @param resolveFunc A function that can be used to resolve modules.
-	 */
-	public static register(resolveFunc: ResolveFunc): void;
-	public static register(p1?: ResolveFunc): void {
+	public static register(): void {
 		let systemResolveFunc: ResolveFunc = Module._resolveFilename;
 
-		Module._resolveFilename = p1 || function (name: string, module: NodeModule) {
+		Module._resolveFilename = function (name: string, module: NodeModule) {
 			if (BuiltInModules.indexOf(name) >= 0) return systemResolveFunc(name, module);
 
-			return Resolver.resolve(name, module.filename);
+			// TODO: change TargetFlags to 'any'
+			return Resolver.resolveInternal(name, module.filename, TargetFlags.es2015);
 		};
 	}
 
@@ -48,11 +68,35 @@ export class Resolver {
 	 * @param requiredPath A path, which may be relative, that should be resolved to an
 	 * absolute path.
 	 * @param basePath The path that is relative to _requiredPath_.
+	 * @param supportedTargets A string arrary that defines the allowable targets that should
+	 * be considered during resolution.
 	 *
 	 * @returns A string representing the absolute path of _requiredPath_ that is relative to
 	 * _basePath_.
 	 */
-	public static resolve(requiredPath: string, basePath: string): string {
+	public static resolve(requiredPath: string, basePath: string, supportedTargets: ("es2015" | "es5" | "any")[] = ["es5"]): string {
+		let targets = TargetFlags.es5;
+
+		for (let supportedTarget of supportedTargets) {
+			targets |= Resolver.TARGET_MAP[supportedTarget] || TargetFlags.es5;
+		}
+
+		return Resolver.resolveInternal(requiredPath, basePath, targets);
+	}
+
+	/**
+	 * Resolves a required path to an absolute path relative to a supplied base path.
+	 *
+	 * @param requiredPath A path, which may be relative, that should be resolved to an
+	 * absolute path.
+	 * @param basePath The path that is relative to _requiredPath_.
+	 * @param supportedTargets A {@link TargetFlags} value representing the allowable targets that
+	 * should be considered during resolution.
+	 *
+	 * @returns A string representing the absolute path of _requiredPath_ that is relative to
+	 * _basePath_.
+	 */
+	private static resolveInternal(requiredPath: string, basePath: string, supportedTargets: TargetFlags): string {
 		let resourcePathMatches = /(.*)#resources/g.exec(requiredPath);
 
 		if (resourcePathMatches) return Resolver.resolveResources(resourcePathMatches[1], basePath);
@@ -78,12 +122,12 @@ export class Resolver {
 		let localPackageJsonFilePath = path.join(basePackageFolderPath, "node_modules", requiredPackage, "package.json");
 		let currentPath: string | undefined = undefined;
 
-		if (fs.existsSync(localPackageJsonFilePath)) return Resolver.resolvePackageMain(localPackageJsonFilePath, requiredPathAdditionalSegments);
+		if (fs.existsSync(localPackageJsonFilePath)) return Resolver.resolvePackageMain(localPackageJsonFilePath, requiredPathAdditionalSegments, supportedTargets);
 
 		localPackageJsonFilePath = path.join(path.join(localPackageJsonFilePath, "../../../.."), requiredPackage, "package.json");
 
 		while (localPackageJsonFilePath != currentPath) {
-			if (fs.existsSync(localPackageJsonFilePath)) return Resolver.resolvePackageMain(localPackageJsonFilePath, requiredPathAdditionalSegments);
+			if (fs.existsSync(localPackageJsonFilePath)) return Resolver.resolvePackageMain(localPackageJsonFilePath, requiredPathAdditionalSegments, supportedTargets);
 
 			currentPath = localPackageJsonFilePath;
 
@@ -106,7 +150,7 @@ export class Resolver {
 		for (let pathMapping of paths[requiredPackage]) {
 			localPackageJsonFilePath = path.join(basePackageFolderPath, pathMapping, "package.json");
 
-			if (fs.existsSync(localPackageJsonFilePath)) return Resolver.resolvePackageMain(localPackageJsonFilePath, requiredPathAdditionalSegments);
+			if (fs.existsSync(localPackageJsonFilePath)) return Resolver.resolvePackageMain(localPackageJsonFilePath, requiredPathAdditionalSegments, supportedTargets);
 		}
 
 		throw new Error(`Cannot find module '${requiredPath}'`);
@@ -142,10 +186,12 @@ export class Resolver {
 	 *
 	 * @param packageJsonFilePath The file path to the 'package.json' file that is being resolved.
 	 * @param childPath An additional path to request relative to the package being resolved.
+	 * @param supportedTargets A {@link TargetFlags} value representing the allowable targets that
+	 * should be considered during resolution.
 	 *
 	 * @returns A file path to the main module of the package described by _packageJsonFilePath_.
 	 */
-	private static resolvePackageMain(packageJsonFilePath: string, childPath: string): string {
+	private static resolvePackageMain(packageJsonFilePath: string, childPath: string, supportedTargets: TargetFlags): string {
 		let packageFolderPath = path.parse(packageJsonFilePath).dir;
 		let packageDesc = JSON.parse(fs.readFileSync(packageJsonFilePath).toString());
 
@@ -153,7 +199,10 @@ export class Resolver {
 
 		let packageMainFilePath = "";
 
-		if ((versionMatches ? parseInt(versionMatches[1]) : 0) >= 6 && packageDesc["jsnext:main"] && Resolver.REMAPPED_PACKAGES.indexOf(packageDesc["name"]) < 0) {
+		if ((versionMatches ? parseInt(versionMatches[1]) : 0) >= 6
+				&& packageDesc["jsnext:main"]
+				&& supportedTargets & TargetFlags.es2015
+				&& Resolver.REMAPPED_PACKAGES.indexOf(packageDesc["name"]) < 0) {
 			packageMainFilePath = packageDesc["jsnext:main"];
 		}
 		else if (packageDesc["main"]) {
