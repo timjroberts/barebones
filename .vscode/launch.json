@@ -8,12 +8,12 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Launch Program",
-			"program": "${workspaceRoot}\\app\\src\\index.ts",
-			"cwd": "${workspaceRoot}\\app",
+			"program": "${workspaceRoot}/app/src/index.ts",
+			"cwd": "${workspaceRoot}/app",
 			"outFiles": [
-				"${workspaceRoot}\\app\\dist-es2015\\**\\*.js",
-				"${workspaceRoot}\\@core\\module-resolver\\dist-es2015\\**\\*.js",
-				"${workspaceRoot}\\@core\\resources\\dist-es2015\\**\\*.js"
+				"${workspaceRoot}/app/dist-es2015/**/*.js",
+				"${workspaceRoot}/@core/module-resolver/dist-es2015/**/*.js",
+				"${workspaceRoot}/@core/resources/dist-es2015/**/*.js"
 			],
 			"sourceMaps": true
 		},
