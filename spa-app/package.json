@@ -7,7 +7,9 @@
 	"typings": "./dist-typings/index.d.ts",
 	"dependencies": {
 		"react": "~15.4",
-		"react-dom": "~15.4"
+		"react-dom": "~15.4",
+
+		"@core/browser-platform": "latest"
 	},
 	"devDependencies": {
 		"@types/react": "latest",
