@@ -6,7 +6,7 @@
 	"jsnext:main": "./dist-es2015/index.js",
 	"typings": "./dist-typings/index.d.ts",
 	"peerDependencies": {
-		"@core/system": "latest"
+		"@core/platform": "latest"
 	},
 	"devDependencies": {
 	}

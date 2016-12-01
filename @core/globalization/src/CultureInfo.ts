@@ -1,4 +1,4 @@
-import { getSystemFunctions, ISystemFunctions } from "@core/system";
+import { getPlatformFunctions, IPlatformFunctions } from "@core/platform";
 
 export class CultureInfo {
 	constructor(private cultureName: string) {
@@ -13,6 +13,6 @@ export class CultureInfo {
 	}
 
 	public static getSystemCulture(): CultureInfo {
-		return new CultureInfo(getSystemFunctions().getSystemCulture());
+		return new CultureInfo(getPlatformFunctions().getSystemCulture());
 	}
 }

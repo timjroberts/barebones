@@ -11,7 +11,7 @@
 		"strictNullChecks": true,
 		"baseUrl": ".",
 		"paths": {
-			"@core/system": ["../system"]
+			"@core/platform": ["../platform"]
 		}
 	},
 	"exclude": [

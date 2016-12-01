@@ -2,12 +2,12 @@ import * as path from "path";
 import * as fs from "fs";
 import * as oslocale from "os-locale";
 
-import { ISystemFunctions } from "@core/system";
+import { IPlatformFunctions } from "@core/platform";
 
 /**
  * Represents the @core system functions as they map to a Node.js runtime.
  */
-export class NodeSystemFunctions {
+export class NodeSystemFunctions implements IPlatformFunctions {
 	/**
 	 * Retrieves a string representing the current system culture.
 	 *

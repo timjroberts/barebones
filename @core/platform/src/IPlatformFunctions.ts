@@ -1,7 +1,7 @@
 /**
- * Represents the @core system functions.
+ * Represents the @core platform functions.
  */
-export interface ISystemFunctions {
+export interface IPlatformFunctions {
 	/**
 	 * Retrieves a string representing the current system culture.
 	 *

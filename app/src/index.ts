@@ -2,7 +2,7 @@ import { Resolver } from "@core/module-resolver";
 
 Resolver.register();
 
-import "@core/node-system";
+import "@core/node-platform";
 
 import { ResourceManager } from "@core/resources";
 

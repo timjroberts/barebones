@@ -1,6 +1,6 @@
 {
-	"name": "@core/node-system",
-	"description": "",
+	"name": "@core/node-platform",
+	"description": "Provides core platform level functions and utilities for application running on Node.js.",
 	"version": "1.0.0",
 	"main": "./dist-es5/index.js",
 	"jsnext:main": "./dist-es2015/index.js",
@@ -9,7 +9,7 @@
 		"os-locale": "~2.0"
 	},
 	"peerDependencies": {
-		"@core/system": "latest"
+		"@core/platform": "latest"
 	},
 	"devDependencies": {
 		"@types/os-locale": "latest",
