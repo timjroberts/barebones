@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import "@core/browser-platform";
+import "@web/web-platform";
 
 import { SpaAppComponent } from "./SpaAppComponent";
 

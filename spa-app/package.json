@@ -9,7 +9,7 @@
 		"react": "~15.4",
 		"react-dom": "~15.4",
 
-		"@core/browser-platform": "latest",
+		"@web/web-platform": "latest",
 		"@core/resources": "latest"
 	},
 	"devDependencies": {

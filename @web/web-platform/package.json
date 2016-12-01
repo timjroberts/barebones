@@ -1,5 +1,5 @@
 {
-	"name": "@core/browser-platform",
+	"name": "@web/web-platform",
 	"description": "Provides core platform level functions and utilities for application running in web browsers.",
 	"version": "1.0.0",
 	"main": "./dist-es5/index.js",
