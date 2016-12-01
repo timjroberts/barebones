@@ -53,7 +53,7 @@ export class Resolver {
 	 * _basePath_.
 	 */
 	public static resolve(requiredPath: string, basePath: string): string {
-		let resourcePathMatches = /(.*)!resources/g.exec(requiredPath);
+		let resourcePathMatches = /(.*)#resources/g.exec(requiredPath);
 
 		if (resourcePathMatches) return Resolver.resolveResources(resourcePathMatches[1], basePath);
 

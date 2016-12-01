@@ -1,4 +1,4 @@
-declare module "*!resources" {
+declare module "*#resources" {
 	const resources: Object;
 
 	export = resources;
