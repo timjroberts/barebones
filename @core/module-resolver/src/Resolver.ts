@@ -29,10 +29,18 @@ type ResolveFunc = (name: string, module: NodeModule) => string;
  * Provides utilities for resolving modules.
  */
 export class Resolver {
+	/**
+	 * The default extension to use when one isn't present on a required path.
+	 */
 	private static DEFAULT_EXTENSION: string = ".js";
 
 	/**
-	 * A collection of packges that must be resolved via their 'main' package.json entry
+	 * A collection of packges that must be resolved via their 'main' package.json entry regardless of target.
+	 * 
+	 * @remarks
+	 * Some packages use the 'jsnext:main' package.json entry to indicate that they support ES2015. However, the
+	 * ES2105 modules will also use import/export features which isn't currently supported by Node.js. For these
+	 * packages we need to ensure we force resolution to the ES5 version of the modules instead.
 	 */
 	private static REMAPPED_PACKAGES: string[] = [
 		"intl-messageformat",
