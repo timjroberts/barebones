@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { IntlProvider, FormattedString } from "@web/components-il8n";
+import { IntlProvider, FormattedString, Image } from "@web/components-il8n";
 
 import * as appResources from "#resources";
 
@@ -10,6 +10,8 @@ export class SpaAppComponent extends React.Component<{}, {}> {
 			<div>
 				<IntlProvider locale={"en"} resources={appResources}>
 					<FormattedString resourceId={"messages.helloWorld"} />
+
+					<Image resourceId={"flag"} />
 				</IntlProvider>
 			</div>
 		);
