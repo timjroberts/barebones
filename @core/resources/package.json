@@ -10,6 +10,7 @@
 		"intl-messageformat-parser": "~1.2"
 	},
 	"peerDependencies": {
+		"@core/platform": "latest",
 		"@core/globalization": "latest"
 	}
 }

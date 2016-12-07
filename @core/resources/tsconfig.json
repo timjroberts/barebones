@@ -11,6 +11,7 @@
 		"strictNullChecks": true,
 		"baseUrl": ".",
 		"paths": {
+			"@core/platform": ["../platform"],
 			"@core/globalization": ["../globalization"]
 		}
 	},

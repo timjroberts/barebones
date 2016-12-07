@@ -1,7 +1,10 @@
 import { CultureInfo } from "@core/globalization";
 import IntlMessageFormat from "intl-messageformat";
 
+import { MissingResourceError  } from "./errors";
 import { ResourcePack } from "./ResourcePack";
+
+import * as localResources from "#resources";
 
 export class ResourceManager {
 	private resourcePack: ResourcePack;
@@ -23,7 +26,29 @@ export class ResourceManager {
 		if (!resourceStrings) {
 			resourceStrings = this.resourcePack.getStrings(new CultureInfo(this.cultureInfo.name.split('-')[0]));
 
-			if (!resourceStrings) throw new Error(`Could not find string resource '${stringResourceId}' for culture '${this.cultureInfo.name}'`);
+			if (!resourceStrings) {
+				throw new MissingResourceError(this.getCoreFormattedString("errors.missingStringResource", {"resourceId": stringResourceId, "cultureName": this.cultureInfo.name}));
+			}
+		}
+
+		let stringToFormat = this.traverseStrings(resourceStrings, stringResourceId);
+
+        let msgFormatter = new IntlMessageFormat(stringToFormat, this.cultureInfo.name);
+
+        return msgFormatter.format(values);
+	}
+
+	private getCoreFormattedString(stringResourceId: string, values?: { [index: string]: string }): string {
+		let localResourceStrings = new ResourcePack(localResources);
+
+		let resourceStrings = localResourceStrings.getStrings(this.cultureInfo);
+
+		if (!resourceStrings) {
+			resourceStrings = localResourceStrings.getStrings(new CultureInfo(this.cultureInfo.name.split('-')[0]));
+
+			if (!resourceStrings) {
+				resourceStrings = localResourceStrings.getStrings(new CultureInfo("en"));
+			}
 		}
 
 		let stringToFormat = this.traverseStrings(resourceStrings, stringResourceId);
