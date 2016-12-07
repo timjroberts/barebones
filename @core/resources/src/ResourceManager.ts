@@ -7,33 +7,34 @@ import { ResourcePack } from "./ResourcePack";
 import * as localResources from "#resources";
 
 export class ResourceManager {
-	private resourcePack: ResourcePack;
-	private cultureInfo: CultureInfo;
+	private _resourcePack: ResourcePack;
+	private _cultureInfo: CultureInfo;
 
 	constructor(resourcePackData: Object)
+	constructor(resourcePackData: Object, culture: CultureInfo)
 	constructor(resourcePackData: Object, culture?: CultureInfo) {
-		this.resourcePack = new ResourcePack(resourcePackData);
-		this.cultureInfo = culture || CultureInfo.getCurrentCulture();
+		this._resourcePack = new ResourcePack(resourcePackData);
+		this._cultureInfo = culture || CultureInfo.getCurrentCulture();
 	}
 
 	public get culture(): CultureInfo {
-		return this.cultureInfo;
+		return this._cultureInfo;
 	}
 
 	public getFormattedString(stringResourceId: string, values?: { [index: string]: string }): string {
-		let resourceStrings = this.resourcePack.getStrings(this.cultureInfo);
+		let resourceStrings = this._resourcePack.getStrings(this._cultureInfo);
 
 		if (!resourceStrings) {
-			resourceStrings = this.resourcePack.getStrings(new CultureInfo(this.cultureInfo.name.split('-')[0]));
+			resourceStrings = this._resourcePack.getStrings(new CultureInfo(this._cultureInfo.name.split('-')[0]));
 
 			if (!resourceStrings) {
-				throw new MissingResourceError(this.getCoreFormattedString("errors.missingStringResource", {"resourceId": stringResourceId, "cultureName": this.cultureInfo.name}));
+				throw new MissingResourceError(this.getCoreFormattedString("errors.missingStringResource", {"resourceId": stringResourceId, "cultureName": this._cultureInfo.name}));
 			}
 		}
 
 		let stringToFormat = this.traverseStrings(resourceStrings, stringResourceId);
 
-        let msgFormatter = new IntlMessageFormat(stringToFormat, this.cultureInfo.name);
+        let msgFormatter = new IntlMessageFormat(stringToFormat, this._cultureInfo.name);
 
         return msgFormatter.format(values);
 	}
@@ -41,10 +42,10 @@ export class ResourceManager {
 	private getCoreFormattedString(stringResourceId: string, values?: { [index: string]: string }): string {
 		let localResourceStrings = new ResourcePack(localResources);
 
-		let resourceStrings = localResourceStrings.getStrings(this.cultureInfo);
+		let resourceStrings = localResourceStrings.getStrings(this._cultureInfo);
 
 		if (!resourceStrings) {
-			resourceStrings = localResourceStrings.getStrings(new CultureInfo(this.cultureInfo.name.split('-')[0]));
+			resourceStrings = localResourceStrings.getStrings(new CultureInfo(this._cultureInfo.name.split('-')[0]));
 
 			if (!resourceStrings) {
 				resourceStrings = localResourceStrings.getStrings(new CultureInfo("en"));
@@ -53,7 +54,7 @@ export class ResourceManager {
 
 		let stringToFormat = this.traverseStrings(resourceStrings, stringResourceId);
 
-        let msgFormatter = new IntlMessageFormat(stringToFormat, this.cultureInfo.name);
+        let msgFormatter = new IntlMessageFormat(stringToFormat, this._cultureInfo.name);
 
         return msgFormatter.format(values);
 	}

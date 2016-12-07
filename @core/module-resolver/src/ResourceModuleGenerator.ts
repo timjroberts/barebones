@@ -6,7 +6,10 @@ import * as fs from "fs";
  * package.
  */
 export class ResourceModuleGenerator {
-	constructor(private resourceFolderPath: string) {
+	private _resourceFolderPath: string;
+
+	constructor(resourceFolderPath: string) {
+		this._resourceFolderPath = resourceFolderPath;
 	}
 
 	/**
@@ -43,8 +46,8 @@ export class ResourceModuleGenerator {
 	private getCultureFolderPaths(): string[] {
 		let cultureFolderPaths: string[] = [];
 
-		for (let folderPath of fs.readdirSync(this.resourceFolderPath)) {
-			let cultureFolderPath = path.join(this.resourceFolderPath, folderPath);
+		for (let folderPath of fs.readdirSync(this._resourceFolderPath)) {
+			let cultureFolderPath = path.join(this._resourceFolderPath, folderPath);
 
 			if (!fs.statSync(cultureFolderPath).isDirectory()) continue;
 

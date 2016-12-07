@@ -1,16 +1,17 @@
 {
-	"name": "spa-app",
-	"description": "",
+	"name": "@web/components-il8n",
+	"description": "Provides core React components that support internationalization.",
 	"version": "1.0.0",
-	"main": "./dist-es2015/index.js",
+	"main": "./dist-es5/index.js",
 	"jsnext:main": "./dist-es2015/index.js",
 	"typings": "./dist-typings/index.d.ts",
 	"dependencies": {
+	},
+	"peerDependencies": {
 		"react": "~15.4",
 		"react-dom": "~15.4",
 
-		"@web/web-platform": "latest",
-		"@web/components-il8n": "latest",
+		"@core/globalization": "latest",
 		"@core/resources": "latest"
 	},
 	"devDependencies": {

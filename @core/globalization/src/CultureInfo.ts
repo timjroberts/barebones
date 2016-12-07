@@ -1,11 +1,14 @@
 import { getPlatformFunctions, IPlatformFunctions } from "@core/platform";
 
 export class CultureInfo {
-	constructor(private cultureName: string) {
+	private _cultureName: string;
+
+	constructor(cultureName: string) {
+		this._cultureName = cultureName;
 	}
 
 	public get name(): string {
-		return this.cultureName;
+		return this._cultureName;
 	}
 
 	public static getCurrentCulture(): CultureInfo {
