@@ -1,5 +1,4 @@
-import { CultureInfo } from "@core/globalization";
-import IntlMessageFormat from "intl-messageformat";
+import { CultureInfo, StringFormat } from "@core/globalization";
 
 import { MissingResourceError  } from "./errors";
 import { ResourcePack } from "./ResourcePack";
@@ -34,7 +33,7 @@ export class ResourceManager {
 
 		let stringToFormat = this.traverseStrings(resourceStrings, stringResourceId);
 
-        let msgFormatter = new IntlMessageFormat(stringToFormat, this._cultureInfo.name);
+        let msgFormatter = new StringFormat(stringToFormat, this._cultureInfo);
 
         return msgFormatter.format(values);
 	}
@@ -74,7 +73,7 @@ export class ResourceManager {
 
 		let stringToFormat = this.traverseStrings(resourceStrings, stringResourceId);
 
-        let msgFormatter = new IntlMessageFormat(stringToFormat, this._cultureInfo.name);
+        let msgFormatter = new StringFormat(stringToFormat, this._cultureInfo);
 
         return msgFormatter.format(values);
 	}
