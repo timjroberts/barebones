@@ -1,5 +1,6 @@
 {
 	"errors": {
-		"missingStringResource": "Could not find string resource '{resourceId}' for culture '{cultureName}'."
+		"missingStringResource": "Could not find string resource '{resourceId}' for culture '{cultureName}'.",
+		"missingImageResource": "Could not find image resource '{resourceId}' for culture '{cultureName}'."
 	}
 }

@@ -6,8 +6,6 @@ import { IntlContext } from "./IntlContext";
 import { IIntlContextProps } from "./IIntlContextProps";
 
 export interface IIntlProviderProps {
-	readonly resources: Object;
-
 	readonly locale?: CultureInfo | string;
 }
 
@@ -31,7 +29,7 @@ export class IntlProvider extends React.Component<IIntlProviderProps, IIntlProvi
 				: CultureInfo.getCurrentCulture();
 
 		this.state = {
-			context: new IntlContext(culture, new ResourceManager(this.props.resources))
+			context: new IntlContext(culture)
 		}
 
 		this._isMounted = false;
@@ -50,7 +48,7 @@ export class IntlProvider extends React.Component<IIntlProviderProps, IIntlProvi
 		this._isMounted = true;
 
 		this.setState({
-			context: new IntlContext(this.state.context.culture, new ResourceManager(this.props.resources, this.state.context.culture))
+			context: new IntlContext(this.state.context.culture)
 		});
 	}
 

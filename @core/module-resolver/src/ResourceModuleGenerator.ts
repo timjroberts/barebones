@@ -18,18 +18,24 @@ export class ResourceModuleGenerator {
 	 * @param resourceModuleFilePath The file path where the resources module should be written.
 	 */
 	public generate(resourceModuleFilePath: string): void {
-		let resources: Object = {};
+		let resources: Object = { };
 
 		for (let cultureFolderPath of this.getCultureFolderPaths()) {
+			let cultureName = cultureFolderPath.split(path.sep).reverse()[0];
+
 			let stringsFilePath = path.join(cultureFolderPath, "strings.json");
 
-			if (!fs.existsSync(stringsFilePath)) continue;
-
-			let cultureName = path.parse(stringsFilePath).dir.split(path.sep).reverse()[0];
-
 			resources[cultureName] = {
-				"importPath": stringsFilePath,
-				"strings": JSON.parse(fs.readFileSync(stringsFilePath, "utf8"))
+				"importPath": cultureFolderPath,
+				"strings": fs.existsSync(stringsFilePath) ? JSON.parse(fs.readFileSync(stringsFilePath, "utf8")) : { },
+				"images": { }
+
+			};
+
+			for (let cultureImageFilePath of this.getCultureImageFilePaths(cultureFolderPath)) {
+				let imageName = cultureImageFilePath.split(path.sep).reverse()[0];
+
+				resources[cultureName]["images"][imageName] = this.toBase64EncodedString(fs.readFileSync(cultureImageFilePath));
 			}
 		}
 
@@ -55,5 +61,24 @@ export class ResourceModuleGenerator {
 		}
 
 		return cultureFolderPaths;
+	}
+
+	private getCultureImageFilePaths(cultureFolderPath: string): string[] {
+		let cultureFilePaths: string[] = [];
+
+		for (let filePath of fs.readdirSync(cultureFolderPath)) {
+			let cultureFilePath = path.join(cultureFolderPath, filePath);
+
+			if (!fs.statSync(cultureFilePath).isFile()) continue;
+			if (path.parse(cultureFilePath).ext !== ".png") continue;
+
+			cultureFilePaths.push(cultureFilePath);
+		}
+
+		return cultureFilePaths;
+	}
+
+	private toBase64EncodedString(buffer: Buffer): string {
+		return buffer.toString("base64");
 	}
 }

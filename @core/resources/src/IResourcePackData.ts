@@ -1,7 +1,8 @@
 export interface IResourcePack {
 	readonly importPath: string;
 
-	readonly strings: Object | undefined;
+	readonly strings: Object;
+	readonly images: Object;
 }
 
 export interface IResourcePackData {
