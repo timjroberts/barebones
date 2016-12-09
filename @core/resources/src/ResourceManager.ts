@@ -1,34 +1,83 @@
-import { CultureInfo } from "@core/globalization";
-import IntlMessageFormat from "intl-messageformat";
+import { CultureInfo, StringFormat } from "@core/globalization";
 
+import { MissingResourceError  } from "./errors";
 import { ResourcePack } from "./ResourcePack";
 
+import * as localResources from "#resources";
+
 export class ResourceManager {
-	private resourcePack: ResourcePack;
-	private cultureInfo: CultureInfo;
+	private _resourcePack: ResourcePack;
+	private _cultureInfo: CultureInfo;
 
 	constructor(resourcePackData: Object)
+	constructor(resourcePackData: Object, culture: CultureInfo)
 	constructor(resourcePackData: Object, culture?: CultureInfo) {
-		this.resourcePack = new ResourcePack(resourcePackData);
-		this.cultureInfo = culture || CultureInfo.getCurrentCulture();
+		this._resourcePack = new ResourcePack(resourcePackData);
+		this._cultureInfo = culture || CultureInfo.getCurrentCulture();
 	}
 
 	public get culture(): CultureInfo {
-		return this.cultureInfo;
+		return this._cultureInfo;
 	}
 
 	public getFormattedString(stringResourceId: string, values?: { [index: string]: string }): string {
-		let resourceStrings = this.resourcePack.getStrings(this.cultureInfo);
+		let resourceStrings = this._resourcePack.getStrings(this._cultureInfo);
 
 		if (!resourceStrings) {
-			resourceStrings = this.resourcePack.getStrings(new CultureInfo(this.cultureInfo.name.split('-')[0]));
+			resourceStrings = this._resourcePack.getStrings(new CultureInfo(this._cultureInfo.name.split('-')[0]));
 
-			if (!resourceStrings) throw new Error(`Could not find string resource '${stringResourceId}' for culture '${this.cultureInfo.name}'`);
+			if (!resourceStrings) {
+				throw new MissingResourceError(this.getCoreFormattedString("errors.missingStringResource", {"resourceId": stringResourceId, "cultureName": this._cultureInfo.name}));
+			}
 		}
 
 		let stringToFormat = this.traverseStrings(resourceStrings, stringResourceId);
 
-        let msgFormatter = new IntlMessageFormat(stringToFormat, this.cultureInfo.name);
+        let msgFormatter = new StringFormat(stringToFormat, this._cultureInfo);
+
+        return msgFormatter.format(values);
+	}
+
+	public getBase64ImageData(imageResourceId: string): string {
+		let images = this._resourcePack.getImages(this._cultureInfo);
+
+		if (!images) {
+			images = this._resourcePack.getImages(new CultureInfo(this._cultureInfo.name.split('-')[0]));
+
+			if (!images) {
+				images = this._resourcePack.getImages(new CultureInfo("en"));
+
+				if (!images) {
+					throw new MissingResourceError(this.getCoreFormattedString("errors.missingImageResource", {"resourceId": imageResourceId, "cultureName": this._cultureInfo.name}));
+				}
+			}
+		}
+
+		let imageData = images[imageResourceId];
+
+		if (!imageData) {
+			throw new MissingResourceError(this.getCoreFormattedString("errors.missingImageResource", {"resourceId": imageResourceId, "cultureName": this._cultureInfo.name}));
+		}
+
+		return imageData;
+	}
+
+	private getCoreFormattedString(stringResourceId: string, values?: { [index: string]: string }): string {
+		let localResourceStrings = new ResourcePack(localResources);
+
+		let resourceStrings = localResourceStrings.getStrings(this._cultureInfo);
+
+		if (!resourceStrings) {
+			resourceStrings = localResourceStrings.getStrings(new CultureInfo(this._cultureInfo.name.split('-')[0]));
+
+			if (!resourceStrings) {
+				resourceStrings = localResourceStrings.getStrings(new CultureInfo("en"));
+			}
+		}
+
+		let stringToFormat = this.traverseStrings(resourceStrings, stringResourceId);
+
+        let msgFormatter = new StringFormat(stringToFormat, this._cultureInfo);
 
         return msgFormatter.format(values);
 	}

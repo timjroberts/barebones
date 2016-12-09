@@ -29,6 +29,8 @@ type ResolveFunc = (name: string, module: NodeModule) => string;
  * Provides utilities for resolving modules.
  */
 export class Resolver {
+	private static DEFAULT_FILE: string = "index.js";
+
 	/**
 	 * The default extension to use when one isn't present on a required path.
 	 */
@@ -112,10 +114,16 @@ export class Resolver {
 		if (path.isAbsolute(requiredPath)) return requiredPath;
 
 		if (requiredPath[0] === '.') {
-			if (path.parse(requiredPath).ext === "") {
-				requiredPath = requiredPath + Resolver.DEFAULT_EXTENSION;
+			let absoluteRequiredPath = path.join(path.parse(basePath).dir, requiredPath);
+
+			if (path.parse(absoluteRequiredPath).ext === "") {
+				absoluteRequiredPath +=
+					fs.existsSync(absoluteRequiredPath) && fs.statSync(absoluteRequiredPath).isDirectory()
+						? path.sep + Resolver.DEFAULT_FILE
+						: Resolver.DEFAULT_EXTENSION
 			}
-			return path.join(path.parse(basePath).dir, requiredPath);
+
+			return absoluteRequiredPath;
 		}
 
 		let packageJsonFilePath = Resolver.resolveBasePackageFilePath(path.parse(basePath).dir);

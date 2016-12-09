@@ -14,4 +14,10 @@ export class ResourcePack {
 
 		return resourcePackData ? resourcePackData.strings : undefined;
 	}
+
+	public getImages(culture: CultureInfo): Object | undefined {
+		let resourcePackData = this.resourcePackData[culture.name];
+
+		return resourcePackData ? resourcePackData.images : undefined;
+	}
 }

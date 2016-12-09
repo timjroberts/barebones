@@ -10,4 +10,5 @@ export function getPlatformFunctions(): IPlatformFunctions {
 	return global["@core/platform:functions"];
 }
 
+export * from "./errors";
 export * from "./IPlatformFunctions";
