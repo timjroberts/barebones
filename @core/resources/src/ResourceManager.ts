@@ -45,7 +45,11 @@ export class ResourceManager {
 			images = this._resourcePack.getImages(new CultureInfo(this._cultureInfo.name.split('-')[0]));
 
 			if (!images) {
-				throw new MissingResourceError(this.getCoreFormattedString("errors.missingImageResource", {"resourceId": imageResourceId, "cultureName": this._cultureInfo.name}));
+				images = this._resourcePack.getImages(new CultureInfo("en"));
+
+				if (!images) {
+					throw new MissingResourceError(this.getCoreFormattedString("errors.missingImageResource", {"resourceId": imageResourceId, "cultureName": this._cultureInfo.name}));
+				}
 			}
 		}
 
