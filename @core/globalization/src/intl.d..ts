@@ -1,7 +1,7 @@
 declare module "intl"
 {
     export class NumberFormat {
-        constructor(locales: string | string[]);
+        constructor(locales: string | string[], options?: Object);
 
         format(number: number): string;
     }
