@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es2015",
+		"moduleResolution": "node",
+		"jsx": "react",
+		"outDir": "./dist-es2015",
+		"rootDir": "./src",
+		"declaration": true,
+		"declarationDir": "./dist-typings",
+		"sourceMap": true,
+		"strictNullChecks": true,
+		"baseUrl": ".",
+		"paths": {
+			"@web/web-platform": ["../@web/web-platform"],
+			"@web/components-il8n": ["../@web/components-il8n"],
+			"@core/resources": ["../@core/resources"],
+			"@core/globalization": ["../@core/globalization"]
+		}
+	},
+	"exclude": [
+		"dist-*",
+		"node_modules"
+	]
+}
