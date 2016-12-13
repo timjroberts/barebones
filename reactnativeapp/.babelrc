@@ -2,8 +2,5 @@
     "sourceMaps": true,
     "presets": [
         "react-native"
-    ],
-    "plugins": [
-        "./node_modules/@core/module-resolver/babel"
     ]
 }
