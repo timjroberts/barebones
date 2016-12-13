@@ -13,8 +13,14 @@ gulp.task("install", () => {
 		.pipe(handleResults());
 });
 
-gulp.task("compile", () => {
+gulp.task("compile-es2015", () => {
 	return getPackages()
-		.pipe(compileTypeScriptPackage())
+		.pipe(compileTypeScriptPackage({ target: "es2015" }))
+		.pipe(handleResults());
+});
+
+gulp.task("compile-es5", () => {
+	return getPackages()
+		.pipe(compileTypeScriptPackage({ target: "es5", lib: [ "ES2015" ] }))
 		.pipe(handleResults());
 });
